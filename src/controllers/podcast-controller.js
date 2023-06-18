@@ -30,3 +30,38 @@ exports.getAllPodcasts = async (req, res) => {
     res.json({ status: "error", message: error.message });
   }
 };
+
+// Update a podcast
+exports.updatePodcast = async (req, res) => {
+  try {
+    let { title } = req.body;
+
+    let podcast = await Podcast.findOneAndUpdate(
+      { _id: req.params.podcastId },
+      { ...req.body, slug: slugify(title) },
+      { new: true }
+    );
+
+    res.json({
+      status: "success",
+      message: "Podcast updated",
+      data: podcast,
+    });
+  } catch (error) {
+    res.json({ status: "error", message: error.message });
+  }
+};
+
+// Delete a podcast
+exports.deletePodcast = async (req, res) => {
+  try {
+    await Podcast.findOneAndDelete({ _id: req.params.podcastId });
+
+    res.json({
+      status: "success",
+      message: "Podcast deleted",
+    });
+  } catch (error) {
+    res.json({ status: "error", message: error.message });
+  }
+};
