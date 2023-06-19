@@ -1,4 +1,5 @@
 // Basic imports
+const { readdirSync } = require("fs");
 const express = require("express");
 const app = express();
 const router = require("./src/routes/api");
@@ -21,7 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 const connectToDatabase = async () => {
   try {
     await mongoose.connect(
-      `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.mbdirqo.mongodb.net/stream-pods`,
+      // `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.mbdirqo.mongodb.net/stream-pods`,
+      `mongodb://127.0.0.1:27017/stream-pods`,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -44,7 +46,9 @@ db.on("disconnected", () => {
 });
 
 // Routes Implementation
-app.use("/api/v1", router);
+readdirSync("./src/routes").map((r) =>
+  app.use("/api/v1", require(`./src/routes/${r}`))
+);
 
 // Undefined Route
 app.use("*", (req, res) => {
