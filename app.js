@@ -9,6 +9,8 @@ const cors = require("cors");
 // Database Import
 const mongoose = require("mongoose");
 const { yellow } = require("colors");
+const { MONGODB_URL } = require("./secret");
+const { connectToDatabase } = require("./src/config/db-config");
 
 // Security Middleware Implementation
 app.use(cors());
@@ -18,31 +20,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // MongoDB Database Connection
-const connectToDatabase = async () => {
+async function connectAppToDatabase() {
   try {
-    await mongoose.connect(
-      // `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.mbdirqo.mongodb.net/stream-pods`,
-      `mongodb://127.0.0.1:27017/stream-pods`,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        autoIndex: true,
-      }
-    );
-
-    console.log("Connected to MongoDB Database".green);
+    await connectToDatabase();
   } catch (error) {
-    console.error("Connection error:".bgRed, error);
+    // Handle the error
+    console.error("Error connecting to the database:", error);
   }
-};
+}
 
-connectToDatabase();
-
-const db = mongoose.connection;
-
-db.on("disconnected", () => {
-  console.log("Disconnected from MongoDB server", yellow);
-});
+connectAppToDatabase();
 
 // Routes Implementation
 readdirSync("./src/routes").map((r) =>

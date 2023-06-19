@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user-model");
+const { JWT_SECRET } = require("../../secret");
 
 exports.requireSignIn = (req, res, next) => {
   try {
-    let decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
+    let decoded = jwt.verify(req.headers.authorization, JWT_SECRET);
     req.user = decoded;
     next();
   } catch (error) {

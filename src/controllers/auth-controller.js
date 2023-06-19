@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user-model");
 const { hashPassword, comparePassword } = require("../utility/auth");
+const { JWT_SECRET } = require("../../secret");
 
 exports.register = async (req, res) => {
   console.log("req.body".bgCyan, req.body);
@@ -24,7 +25,7 @@ exports.register = async (req, res) => {
     }).save();
 
     // create jwt token for signed in user
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
       expiresIn: "7d",
     });
 
@@ -66,7 +67,7 @@ exports.login = async (req, res) => {
     }
 
     // 5. create signed jwt
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
       expiresIn: "7d",
     });
 
