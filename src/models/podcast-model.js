@@ -25,6 +25,9 @@ const podcastSchema = new mongoose.Schema(
     audioUrl: {
       type: String,
     },
+    imageUrl: {
+      type: String,
+    },
   },
   { timestamps: true, versionKey: false }
 );
