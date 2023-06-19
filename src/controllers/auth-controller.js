@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/user-model");
-const { use } = require("../routes/api");
 const { hashPassword, comparePassword } = require("../utility/auth");
 
 exports.register = async (req, res) => {
@@ -76,5 +75,37 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     res.json({ message: "Error logging in user", error: error.message });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const { name, password } = req.body;
+    const user = await User.findById(req.user._id);
+
+    // check password length
+    if (password && password.length < 6) {
+      return res.json({
+        error: "password is required and should be 6 characters long",
+      });
+    }
+
+    const passwordHash = password ? await hashPassword(password) : undefined;
+
+    const updated = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        name: name || user.name,
+        password: passwordHash || user.password,
+      },
+      { new: true }
+    );
+
+    updated.password = undefined; // for not sending the password in response.
+    updated.role = undefined; // for not sending the role in response.
+
+    res.json({ message: "success", updated });
+  } catch (error) {
+    res.json({ message: "Error updating profile", error: error.message });
   }
 };
