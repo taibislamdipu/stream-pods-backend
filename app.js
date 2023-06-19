@@ -20,11 +20,14 @@ app.use(express.urlencoded({ extended: true }));
 // MongoDB Database Connection
 const connectToDatabase = async () => {
   try {
-    await mongoose.connect(`mongodb://127.0.0.1:27017/stream-pods`, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      autoIndex: true,
-    });
+    await mongoose.connect(
+      `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.mbdirqo.mongodb.net/stream-pods`,
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        autoIndex: true,
+      }
+    );
 
     console.log("Connected to MongoDB Database".green);
   } catch (error) {
@@ -37,7 +40,7 @@ connectToDatabase();
 const db = mongoose.connection;
 
 db.on("disconnected", () => {
-  console.log("Disconnected from MongoDB local server", yellow);
+  console.log("Disconnected from MongoDB server", yellow);
 });
 
 // Routes Implementation
