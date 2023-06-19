@@ -2,7 +2,6 @@
 const { readdirSync } = require("fs");
 const express = require("express");
 const app = express();
-const router = require("./src/routes/api");
 
 // Security Middleware
 const cors = require("cors");

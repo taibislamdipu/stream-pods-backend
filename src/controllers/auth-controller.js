@@ -46,6 +46,12 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (password.length < 6) {
+      return res.json({
+        error: "password is required and should be 6 characters long",
+      });
+    }
+
     // check if email is taken
     const user = await User.findOne({ email });
 
