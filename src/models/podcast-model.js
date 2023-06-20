@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const podcastSchema = new mongoose.Schema(
   {
@@ -27,6 +28,11 @@ const podcastSchema = new mongoose.Schema(
     },
     imageUrl: {
       type: String,
+    },
+    category: {
+      type: ObjectId,
+      ref: "Category",
+      required: true,
     },
   },
   { timestamps: true, versionKey: false }

@@ -65,3 +65,46 @@ exports.deletePodcast = async (req, res) => {
     res.json({ status: "error", message: error.message });
   }
 };
+
+// Search podcasts by keyword
+exports.searchPodcast = async (req, res) => {
+  try {
+    const { keyword } = req.params;
+    const results = await Podcast.find({
+      $or: [
+        { title: { $regex: keyword, $options: "i" } },
+        { description: { $regex: keyword, $options: "i" } },
+      ],
+    }).select("-imageUrl -audioUrl");
+
+    res.json(results);
+  } catch (error) {
+    res.json({ status: "error", message: error.message });
+  }
+};
+
+// Filter podcasts by category
+exports.filteredProducts = async (req, res) => {
+  try {
+    const { checked, radio } = req.body;
+    const args = {};
+
+    if (checked.length > 0) {
+      args.category = checked;
+    }
+
+    if (radio.length) {
+      args.price = { $gte: radio[0], $lte: radio[1] };
+    }
+
+    console.log("args => ".bgGreen, args);
+
+    const products = await Product.find(args);
+    // const products = await Product.find({category:["react","node"],price:{$gte:40,$lte:59}});
+    console.log("filtered products query => ", products.length);
+
+    res.json(products);
+  } catch (err) {
+    console.log(err);
+  }
+};
