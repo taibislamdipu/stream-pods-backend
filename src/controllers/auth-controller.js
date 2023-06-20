@@ -136,3 +136,21 @@ exports.sendOtp = async (req, res) => {
     res.json({ message: "Error sending OTP", error: error.message });
   }
 };
+
+exports.verifyOtp = async (req, res) => {
+  try {
+    let email = req.params.email;
+    let otp = req.params.otp;
+
+    let result = await OTPModel.find({ email, otp, status: 0 }).count("total");
+
+    if (result === 1) {
+      await OTPModel.updateOne({ email, otp, status: 0 }, { status: 1 });
+      res.json({ status: "Success", message: "Verification successful" });
+    } else {
+      res.json({ status: "Error", message: "Invalid OTP" });
+    }
+  } catch (error) {
+    res.json({ message: "Error verifying OTP", error: error.message });
+  }
+};

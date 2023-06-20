@@ -19,7 +19,7 @@ exports.SendEmailUtility = async (EmailTo, EmailText, EmailSubject) => {
 
     await transporter.sendMail(mailOptions);
 
-    console.log("Success".bgGreen);
+    console.log("Success".bgGreen, "Email sent");
   } catch (error) {
     console.log(error);
   }
