@@ -84,27 +84,14 @@ exports.searchPodcast = async (req, res) => {
 };
 
 // Filter podcasts by category
-exports.filteredProducts = async (req, res) => {
+exports.filteredPodcast = async (req, res) => {
   try {
-    const { checked, radio } = req.body;
-    const args = {};
+    const { categoryId } = req.params;
 
-    if (checked.length > 0) {
-      args.category = checked;
-    }
+    const podcasts = await Podcast.find({ category: categoryId });
 
-    if (radio.length) {
-      args.price = { $gte: radio[0], $lte: radio[1] };
-    }
-
-    console.log("args => ".bgGreen, args);
-
-    const products = await Product.find(args);
-    // const products = await Product.find({category:["react","node"],price:{$gte:40,$lte:59}});
-    console.log("filtered products query => ", products.length);
-
-    res.json(products);
-  } catch (err) {
-    console.log(err);
+    res.json({ status: "success", count: podcasts.length, data: podcasts });
+  } catch (error) {
+    res.json({ error: "An error occurred while retrieving podcasts." });
   }
 };

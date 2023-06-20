@@ -33,4 +33,7 @@ router.delete(
 // Search podcast
 router.get("/podcast/search/:keyword", podcast.searchPodcast);
 
+// Find podcast by category
+router.get("/podcast/:categoryId", podcast.filteredPodcast);
+
 module.exports = router;
