@@ -4,9 +4,12 @@ const authVerifyMiddleware = require("../middleware/auth-verify-middleware");
 
 const router = express.Router();
 
+// Before login
 router.post("/register", authController.register);
 router.post("/login", authController.login);
+router.get("/send-otp/:email", authController.sendOtp);
 
+// After login
 router.put(
   "/update-profile",
   authVerifyMiddleware.requireSignIn,

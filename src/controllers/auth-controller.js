@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user-model");
 const { hashPassword, comparePassword } = require("../utility/auth");
 const { JWT_SECRET } = require("../../secret");
+const OTPModel = require("../models/otp-model");
+const { SendEmailUtility } = require("../utility/sendEmailUtility");
 
 exports.register = async (req, res) => {
   console.log("req.body".bgCyan, req.body);
@@ -114,5 +116,23 @@ exports.updateProfile = async (req, res) => {
     res.json({ message: "success", updated });
   } catch (error) {
     res.json({ message: "Error updating profile", error: error.message });
+  }
+};
+
+exports.sendOtp = async (req, res) => {
+  try {
+    let email = req.params.email;
+    let otp = Math.floor(100000 + Math.random() * 900000);
+
+    // insert otp in db
+    await OTPModel.create({ email, otp });
+
+    await SendEmailUtility(email, `Your OTP is ${otp}`, "OTP for email");
+
+    res.json({
+      message: `An OTP has been successfully sent to the email address: ${email}`,
+    });
+  } catch (error) {
+    res.json({ message: "Error sending OTP", error: error.message });
   }
 };
